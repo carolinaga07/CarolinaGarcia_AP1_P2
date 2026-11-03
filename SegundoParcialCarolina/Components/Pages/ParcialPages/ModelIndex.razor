@@ -1,5 +1,45 @@
-﻿<h3>ModelIndex</h3>
+﻿@page "/model1"
+@inject ModelService model1Service
+@inject ToastService toastService
+
+<PageTitle>Registro de Model1</PageTitle>
+<div class="container">
+    <div class="card shadow-lg">
+        <div class="card-header d-flex justify-content-between align-content-center mb-4">
+            <h5 class="card-title">Registro de model1</h5>
+            <a href="/model1/create" class="btn btn-primary"><span class="bi bi mt-3"></span>Crear</a>
+        </div>
+
+        <div class="card-body">
+            <div class="row align-items-center">
+                <div class="col-3">
+                    <InputSelect class="form-select" @bind-Value="Filtro">
+                        <option value="" selected disabled>Elija una opcion</option>
+                        <option value="filtro1">Filtro1</option>
+                        <option value="filtro2">Filtro2</option>
+                    </InputSelect>
+                </div>
+                <div class="col-4">
+                    <div class="input-group">
+                        <input class="form-control" @bind="ValorFiltro" placeholder="Buscar" />
+                        <button type="button" class="btn btn-outline-primary bi bi-search" @onclick="Buscar"></button>
+                    </div>
+                </div>
+                @*Quickgrid*@
+            </div>
+        </div>
+        @*Footer*@
+    </div>
+</div>
+
+@*ModalEliminar*@
 
 @code {
+    public string Filtro { get; set; } = string.Empty;
+    public string ValorFiltro { get; set; } = string.Empty;
 
+    private void Buscar()
+    {
+        throw new NotImplementedException();
+    }
 }

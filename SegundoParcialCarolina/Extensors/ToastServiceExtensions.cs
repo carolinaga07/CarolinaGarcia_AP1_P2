@@ -1,6 +1,6 @@
 ﻿using BlazorBootstrap;
 
-namespace PrimerParcialCarolina.Extensors
+namespace SegundoParcialCarolina.Extensors
 {
     public static class ToastServiceExtensions
     {

@@ -1,4 +1,11 @@
-﻿<h3>ModelEdit</h3>
+﻿@page "/model1/edit/{modelid:int}"
+
+@rendermode InteractiveServer
+@inject ModelService model1Service
+@inject NavigationManager navigationManager
+@inject ToastService toastService
+
+<PageTitle>Edit</PageTitle>
 
 @code {
 

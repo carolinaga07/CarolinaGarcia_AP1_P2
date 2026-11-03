@@ -1,0 +1,26 @@
+﻿@*﻿<div class="col-auto input-group align-items-center">
+    <label class="col-form-label input-group-text">Seleccione:</label>
+
+    <InputSelect class="form-control form-select" @bind-Value="Id">
+        <option disabled value="0">-- Seleccione un model --</option>
+        @foreach (var model in Model1)
+        {
+            <option value="@model.PrestamoId">@model.PrestamoId - @model.Concepto ($@model.Balance.ToString("N2"))</option>
+        }
+    </InputSelect>
+    <label class="col-form-label input-group-text">Valor:</label>
+    <InputNumber class="form-control" id="quantity-input" @bind-Value="Valor" min="0" />
+
+    <button type="button" class="btn btn-outline-success bi bi-plus" @onclick="TriggerSelection">Agregar</button>
+</div>
+@if (ErrorMessage != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @ErrorMessage
+    </div>
+}*@
+
+
+@code {
+
+}

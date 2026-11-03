@@ -8,6 +8,24 @@ namespace SegundoParcialCarolina.Service;
 
 public class ModelService(IDbContextFactory<Contexto> contextFactory) : Aplicada1.Core.IServiceResult<Model1, int>
 {
+     public Task<Result> Guardar(Model1 entidad)
+    {
+        throw new NotImplementedException();
+    }
+
+    //private async Task<Result> Existe (int id)
+    // {
+
+    // }
+
+    // private async Task<Result> Insertar(Model1 model1)
+    //{
+
+    //}
+
+    //private async Task<result> Modificar(Model1 model1)
+    //{
+
     public Task<Result<Model1?>> Buscar(int id)
     {
         throw new NotImplementedException();
@@ -23,8 +41,5 @@ public class ModelService(IDbContextFactory<Contexto> contextFactory) : Aplicada
         throw new NotImplementedException();
     }
 
-    public Task<Result> Guardar(Model1 entidad)
-    {
-        throw new NotImplementedException();
-    }
+   
 }

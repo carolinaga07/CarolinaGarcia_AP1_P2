@@ -12,6 +12,12 @@
 
         <div class="card-body">
             <div class="row align-items-center">
+                <div class="col-2">
+                    <InputDate class="form-control" @bind-Value="desde" />
+                </div>
+                <div class="col-2">
+                    <InputDate class="form-control" @bind-Value="hasta" />
+                </div>
                 <div class="col-3">
                     <InputSelect class="form-select" @bind-Value="Filtro">
                         <option value="" selected disabled>Elija una opcion</option>
@@ -32,14 +38,18 @@
     </div>
 </div>
 
-@*ModalEliminar*@
+
 
 @code {
     public string Filtro { get; set; } = string.Empty;
     public string ValorFiltro { get; set; } = string.Empty;
+    private DateTime? desde;
+    private DateTime? hasta;
 
     private void Buscar()
     {
         throw new NotImplementedException();
     }
+
+    
 }

@@ -1,9 +1,9 @@
 ﻿@*﻿<div class="col-auto input-group align-items-center">
     <label class="col-form-label input-group-text">Seleccione:</label>
 
-    <InputSelect class="form-control form-select" @bind-Value="Id">
-        <option disabled value="0">-- Seleccione un model --</option>
-        @foreach (var model in Model1)
+    <InputSelect class="form-control form-select" @bind-Value="XId">
+        <option disabled value="0">-- Seleccione una opcion --</option>
+        @foreach (var prestamo in prestamos)
         {
             <option value="@model.PrestamoId">@model.PrestamoId - @model.Concepto ($@model.Balance.ToString("N2"))</option>
         }

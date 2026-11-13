@@ -13,17 +13,21 @@ public class ModelService(IDbContextFactory<Contexto> contextFactory) : Aplicada
         throw new NotImplementedException();
     }
 
-    //private async Task<Result> Existe (int id)
+    //private async Task<bool> Existe (int id)
     // {
 
     // }
 
-    // private async Task<Result> Insertar(Model1 model1)
+    // private async Task<bool> Insertar(Model1 model1)
     //{
 
     //}
 
-    //private async Task<result> Modificar(Model1 model1)
+    /*private async Task<bool> Calcular(Model1 model, Contexto contexto)
+     * {
+     * }*/
+
+    //private async Task<bool> Modificar(Model1 model1)
     //{
 
     public Task<Result<Model1?>> Buscar(int id)

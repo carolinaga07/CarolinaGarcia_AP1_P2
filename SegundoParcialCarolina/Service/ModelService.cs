@@ -23,27 +23,40 @@ public class ModelService(IDbContextFactory<Contexto> contextFactory) : Aplicada
 
     //}
 
-    /*private async Task<bool> Calcular(Model1 model, Contexto contexto)
-     * {
-     * }*/
-
     //private async Task<bool> Modificar(Model1 model1)
     //{
 
+   
     public Task<Result<Model1?>> Buscar(int id)
     {
         throw new NotImplementedException();
     }
-
+    public Task<Result<List<Model1>>> GetList(Expression<Func<Model1, bool>> criterio)
+    {
+        throw new NotImplementedException();
+    }
     public Task<Result> Eliminar(int id)
     {
         throw new NotImplementedException();
     }
 
-    public Task<Result<List<Model1>>> GetList(Expression<Func<Model1, bool>> criterio)
-    {
-        throw new NotImplementedException();
-    }
+    /*private async Task<bool> Calcular(Model1 model, Contexto contexto)
+    * {
+    * }*/
 
-   
+
+    /*private async Task Ajustar(Contexto contexto, int modelId, int puntos)
+      * {
+      * }*/
+
+    /*public async Task<List<model>> Listarmodel()
+    * {
+    * }*/
+
+
+    /*public async Task<List<modelpuntaje>> Listarmodelpuntaje()
+    * {
+    * }*/
+
+
 }

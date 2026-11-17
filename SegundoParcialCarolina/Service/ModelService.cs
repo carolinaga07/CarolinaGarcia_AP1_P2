@@ -6,9 +6,9 @@ using System.Linq.Expressions;
 
 namespace SegundoParcialCarolina.Service;
 
-public class ModelService(IDbContextFactory<Contexto> contextFactory) : Aplicada1.Core.IServiceResult<Model1, int>
+public class ModelService(IDbContextFactory<Contexto> contextFactory) : Aplicada1.Core.IServiceResult<Productos, int>
 {
-     public Task<Result> Guardar(Model1 entidad)
+     public Task<Result> Guardar(Productos entidad)
     {
         throw new NotImplementedException();
     }
@@ -27,11 +27,11 @@ public class ModelService(IDbContextFactory<Contexto> contextFactory) : Aplicada
     //{
 
    
-    public Task<Result<Model1?>> Buscar(int id)
+    public Task<Result<Productos?>> Buscar(int id)
     {
         throw new NotImplementedException();
     }
-    public Task<Result<List<Model1>>> GetList(Expression<Func<Model1, bool>> criterio)
+    public Task<Result<List<Productos>>> GetList(Expression<Func<Productos, bool>> criterio)
     {
         throw new NotImplementedException();
     }

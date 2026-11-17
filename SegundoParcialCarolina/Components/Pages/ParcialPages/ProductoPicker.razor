@@ -1,0 +1,67 @@
+﻿
+<div class="col-auto input-group align-items-center">
+    <label class="col-form-label input-group-text">Seleccione:</label>
+
+    <InputSelect class="form-control form-select"  @bind-Value="ProductoId">
+        <option value="0">-- Seleccione un producto --</option>
+        @foreach (var p in Productos)
+        {
+            <option value="@p.ProductoId">@p.Nombre (Stock: @p.Stock)</option>
+        }
+    </InputSelect>
+    <label class="col-form-label input-group-text">Precio:</label>
+    <label class="form-control">@(Seleccionado?.Precio.ToString("N2"))</label>
+
+    <label class="col-form-label input-group-text">Cantidad:</label>
+    <InputNumber class="form-control" @bind-Value="Cantidad" min="1"/>
+
+    <button class="btn btn-primary" @onclick="TriggerSelection">Agregar</button>
+</div>
+
+@if(ErrorMessage != null)
+{
+    <div class="alert alert-danger mt-2" role="alert">
+        @ErrorMessage
+    </div>
+}
+
+@code {
+    [Parameter]
+    public List<Productos> Productos { get; set; } = [];
+
+    [Parameter]
+    public EventCallback<(Productos producto, int Cantidad)> OnProductoSelected{ get; set; }
+
+    private int ProductoId { get; set; }
+    private int Cantidad{ get; set; }
+    private string? ErrorMessage{ get; set; }
+
+    private Productos? Seleccionado => Productos.FirstOrDefault(p => p.ProductoId == ProductoId);
+
+    private async Task TriggerSelection()
+    {
+        ErrorMessage = null;
+
+        if(Seleccionado == null)
+        {
+            ErrorMessage = "Seleccione un producto";
+            return;
+        }
+
+        if(Cantidad < 0)
+        {
+            ErrorMessage = "La cantidad debe ser mayor a 0";
+            return;
+        }
+
+        if(Cantidad > Seleccionado.Stock)
+        {
+            ErrorMessage = "La cantidad no puede ser mayor al stock disponible";
+            return;
+        }
+        await OnProductoSelected.InvokeAsync((Seleccionado, Cantidad));
+        ProductoId = 0;
+        Cantidad = 1;
+
+    } 
+}

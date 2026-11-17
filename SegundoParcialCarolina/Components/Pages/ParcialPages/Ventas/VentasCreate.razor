@@ -4,15 +4,82 @@
 @inject NavigationManager Navigation
 @inject ToastService toastService
 
-<PageTitle>Create</PageTitle>
+<PageTitle>Registro de Ventas</PageTitle>
+<EditForm Model="venta" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator/>
+    <div class="container">
+        <div class="card shadow-lg">
+            <div class="card-header text-center">
+                <h5 class="card-title">Registro de Ventas</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label class="form-label">Fecha</label>
+                    <InputDate class="form-control" @bind-Value="venta.Fecha"/>
+                    <ValidationMessage For="() => venta.Fecha"></ValidationMessage>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Observacion</label>
+                    <InputText class="form-control" @bind-Value="venta.Observacion" />
+                </div>
 
-@*Campos normales*@
+                <ProductoPicker Productos="productos" OnProductoSelected="Agregar"/>
+                <QuickGrid Items="venta.Detalles.AsQueryable()" class="table table-hover mt-3">
+                    <TemplateColumn Title="Producto">
+                        @productos.FirstOrDefault(p => p.ProductoId == context.ProductoId)?.Nombre
+                    </TemplateColumn>
+                    <PropertyColumn Property="d => d.Cantidad" Title="Cantidad" />
+                    <PropertyColumn Property="d => d.Precio" Title="Precio" Format="N2"/>
+                    <TemplateColumn Title="SubTotal">
+                        @((context.Cantidad * context.Precio).ToString("N2"))
+                    </TemplateColumn>
+                    <TemplateColumn Title="Opciones">
+                        <button type="button" class="btn btn-outline-danger bi bi-trash" @onclick="() => Quitar(context)"></button>
+                    </TemplateColumn>
+                </QuickGrid>
+                <p class="text-end">Total: @venta.Detalles.Sum(d => d.Cantidad * d.Precio).ToString("N2")</p>
+            </div>
+            <div class="card-footer text-center">
+                <a href="/Ventas" class="btn btn-secondary"><span class="bi bi-arrow-left"></span> Volver</a>
+                <button type="button" class="btn btn-primary bi bi-floppy"> Guardar</button>
+            </div>
+        </div>
+    </div>
+</EditForm>
 
-@*Picker*@
-   @*Quickgrid*@
-
-@*Footer*@
 
 @code {
+    private Ventas? venta { get; set; }
+    private List<Productos> productos = new List<Productos>();
 
+    protected override async Task OnInitializedAsync()
+    {
+        productos = await ventasService.ListarProductos();
+    }  
+
+    private void Agregar((Productos producto, int cantidad) item)
+    {
+        venta.Detalles.Add(new VentasDetalle
+            {
+                ProductoId = item.producto.ProductoId,
+                Cantidad = item.cantidad,
+                Precio = item.producto.Precio
+            });
+    }
+
+    private void Quitar(VentasDetalle detalle) => venta.Detalles.Remove(detalle);
+
+    private async Task Guardar()
+    {
+        var resultado = await ventasService.Guardar(venta);
+        if (resultado.IsSuccess)
+        {
+            toastService.ShowSuccess("Venta guardada correctamente");
+            Navigation.NavigateTo("/Ventas");
+        }
+        else
+        {
+            toastService.ShowError(resultado.Error.Description);
+        }
+    } 
 }

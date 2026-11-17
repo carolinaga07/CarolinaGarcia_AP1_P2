@@ -1,0 +1,128 @@
+﻿@page "/Ventas/Editar/{VentaId:int}"
+@rendermode InteractiveServer
+@inject VentasService ventasService
+@inject NavigationManager Navigation
+@inject ToastService toastService
+
+<PageTitle>Editar de Venta</PageTitle>
+<EditForm Model="venta" OnValidSubmit="Modificar">
+    <DataAnnotationsValidator />
+    <div class="container">
+        <div class="card shadow-lg">
+            <div class="card-header text-center">
+                <h5 class="card-title">Editar Venta</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label class="form-label">Fecha</label>
+                    <InputDate class="form-control" @bind-Value="venta.Fecha" />
+                    <ValidationMessage For="() => venta.Fecha"></ValidationMessage>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Observacion</label>
+                    <InputText class="form-control" @bind-Value="venta.Observacion" />
+                </div>
+
+                <ProductoPicker Productos="productos" OnProductoSelected="Agregar" />
+                <QuickGrid Items="venta.Detalles.AsQueryable()" class="table table-hover mt-3">
+                    <TemplateColumn Title="Producto">
+                        @productos.FirstOrDefault(p => p.ProductoId == context.ProductoId)?.Nombre
+                    </TemplateColumn>
+                    <PropertyColumn Property="d => d.Cantidad" Title="Cantidad" />
+                    <PropertyColumn Property="d => d.Precio" Title="Precio" Format="N2" />
+                    <TemplateColumn Title="SubTotal">
+                        @((context.Cantidad * context.Precio).ToString("N2"))
+                    </TemplateColumn>
+                    <TemplateColumn Title="Opciones">
+                        <button type="button" class="btn btn-outline-danger bi bi-trash" @onclick="() => Quitar(context)"></button>
+                    </TemplateColumn>
+                </QuickGrid>
+                <p class="text-end">Total: @venta.Detalles.Sum(d => d.Cantidad * d.Precio).ToString("N2")</p>
+            </div>
+            <div class="card-footer text-center">
+                <a href="/Ventas" class="btn btn-secondary"><span class="bi bi-arrow-left"></span> Volver</a>
+                <button type="button" class="btn btn-danger bi bi-trash" data-bs-toggle="modal" data-bs-target="#modalEliminar"> Eliminar</button>
+                <button type="button" class="btn btn-primary bi bi-floppy"> Guardar</button>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+
+<div class="modal fade" id="modalEliminar" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirmar Eliminacion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Eliminar esta Venta?</p>
+                <p>Fecha: @venta.Fecha.ToShortDateString()</p>
+                <p>Observacion: @venta.Observacion</p>
+                <p>Total: @venta.Detalles.Sum(d => d.Cantidad * d.Precio).ToString("N2")</p>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal" @onclick="Eliminar">Eliminar</button>
+        </div>
+    </div>
+</div>
+
+
+@code {
+    [Parameter]
+    public int VentaId{ get; set; }
+
+    private Ventas? venta { get; set; }
+    private List<Productos> productos = new List<Productos>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        productos = await ventasService.ListarProductos();
+
+        var resultado = await ventasService.Buscar(VentaId);
+        venta = resultado.ValueOrDefault ?? new Ventas();
+    }
+
+    private void Agregar((Productos producto, int cantidad) item)
+    {
+        venta.Detalles.Add(new VentasDetalle
+        {
+            ProductoId = item.producto.ProductoId,
+            Cantidad = item.cantidad,
+            Precio = item.producto.Precio
+        });
+    }
+
+    private void Quitar(VentasDetalle detalle) => venta.Detalles.Remove(detalle);
+
+    private async Task Modificar()
+    {
+        var resultado = await ventasService.Guardar(venta);
+        if (resultado.IsSuccess)
+        {
+            toastService.ShowSuccess("Venta actualizada correctamente");
+            Navigation.NavigateTo("/Ventas");
+        }
+        else
+        {
+            toastService.ShowError(resultado.Error.Description);
+        }
+    }
+
+    private async Task Eliminar()
+    {
+        var resultado = await ventasService.Eliminar(venta.VentaId);
+        if (resultado.IsSuccess)
+        {
+            toastService.ShowSuccess("Venta eliminada correctamente");
+            Navigation.NavigateTo("/Ventas");
+        }
+        else
+        {
+            toastService.ShowError(resultado.Error.Description);
+        }
+    }
+}

@@ -41,35 +41,35 @@ namespace SegundoParcialCarolina.Migrations
                         new
                         {
                             ProductoId = 1,
-                            Nombre = "Café Mocha",
+                            Nombre = "Starbucks Mocha",
                             Precio = 150.0,
                             Stock = 10
                         },
                         new
                         {
                             ProductoId = 2,
-                            Nombre = "Café Vainilla",
+                            Nombre = "Starbucks Vainilla",
                             Precio = 150.0,
                             Stock = 10
                         },
                         new
                         {
                             ProductoId = 3,
-                            Nombre = "Café Caramelo",
+                            Nombre = "Starbucks Caramelo",
                             Precio = 160.0,
                             Stock = 10
                         },
                         new
                         {
                             ProductoId = 4,
-                            Nombre = "Café Americano",
+                            Nombre = "Starbucks Americano",
                             Precio = 120.0,
                             Stock = 10
                         },
                         new
                         {
                             ProductoId = 5,
-                            Nombre = "Café Latte",
+                            Nombre = "Starbucks Latte",
                             Precio = 140.0,
                             Stock = 10
                         });

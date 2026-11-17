@@ -15,7 +15,7 @@
     <label class="col-form-label input-group-text">Cantidad:</label>
     <InputNumber class="form-control" @bind-Value="Cantidad" min="1"/>
 
-    <button class="btn btn-primary" @onclick="TriggerSelection">Agregar</button>
+    <button type="button" class="btn btn-primary" @onclick="TriggerSelection">Agregar</button>
 </div>
 
 @if(ErrorMessage != null)

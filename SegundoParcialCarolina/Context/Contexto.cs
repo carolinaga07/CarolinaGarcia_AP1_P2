@@ -16,11 +16,11 @@ public class Contexto: DbContext
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.Entity<Productos>().HasData(
-            new Productos { ProductoId = 1, Nombre = "Café Mocha", Precio = 150, Stock = 10 },
-            new Productos { ProductoId = 2, Nombre = "Café Vainilla", Precio = 150, Stock = 10 },
-            new Productos { ProductoId = 3, Nombre = "Café Caramelo", Precio = 160, Stock = 10 },
-            new Productos { ProductoId = 4, Nombre = "Café Americano", Precio = 120, Stock = 10 },
-            new Productos { ProductoId = 5, Nombre = "Café Latte", Precio = 140, Stock = 10 }
+            new Productos { ProductoId = 1, Nombre = "Starbucks Mocha", Precio = 150, Stock = 10 },
+            new Productos { ProductoId = 2, Nombre = "Starbucks Vainilla", Precio = 150, Stock = 10 },
+            new Productos { ProductoId = 3, Nombre = "Starbucks Caramelo", Precio = 160, Stock = 10 },
+            new Productos { ProductoId = 4, Nombre = "Starbucks Americano", Precio = 120, Stock = 10 },
+            new Productos { ProductoId = 5, Nombre = "Starbucks Latte", Precio = 140, Stock = 10 }
         );
     }
     

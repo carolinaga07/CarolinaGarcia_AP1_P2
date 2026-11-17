@@ -25,23 +25,23 @@
 
                 <ProductoPicker Productos="productos" OnProductoSelected="Agregar"/>
                 <QuickGrid Items="venta.Detalles.AsQueryable()" class="table table-hover mt-3">
-                    <TemplateColumn Title="Producto">
-                        @productos.FirstOrDefault(p => p.ProductoId == context.ProductoId)?.Nombre
+                    <TemplateColumn Title="Producto" Context="detalle">
+                        @productos.FirstOrDefault(p => p.ProductoId == detalle.ProductoId)?.Nombre
                     </TemplateColumn>
                     <PropertyColumn Property="d => d.Cantidad" Title="Cantidad" />
                     <PropertyColumn Property="d => d.Precio" Title="Precio" Format="N2"/>
-                    <TemplateColumn Title="SubTotal">
-                        @((context.Cantidad * context.Precio).ToString("N2"))
+                    <TemplateColumn Title="SubTotal" Context="detalle">
+                        @((detalle.Cantidad * detalle.Precio).ToString("N2"))
                     </TemplateColumn>
-                    <TemplateColumn Title="Opciones">
-                        <button type="button" class="btn btn-outline-danger bi bi-trash" @onclick="() => Quitar(context)"></button>
+                    <TemplateColumn Title="Opciones" Context="detalle">
+                        <button type="button" class="btn btn-outline-danger bi bi-trash" @onclick="() => Quitar(detalle)"></button>
                     </TemplateColumn>
                 </QuickGrid>
                 <p class="text-end">Total: @venta.Detalles.Sum(d => d.Cantidad * d.Precio).ToString("N2")</p>
             </div>
             <div class="card-footer text-center">
                 <a href="/Ventas" class="btn btn-secondary"><span class="bi bi-arrow-left"></span> Volver</a>
-                <button type="button" class="btn btn-primary bi bi-floppy"> Guardar</button>
+                <button type="submit" class="btn btn-primary bi bi-floppy"> Guardar</button>
             </div>
         </div>
     </div>
@@ -49,7 +49,7 @@
 
 
 @code {
-    private Ventas? venta { get; set; }
+    private Ventas venta { get; set; } = new Ventas();
     private List<Productos> productos = new List<Productos>();
 
     protected override async Task OnInitializedAsync()
@@ -59,6 +59,24 @@
 
     private void Agregar((Productos producto, int cantidad) item)
     {
+        if (item.cantidad <= 0)
+        {
+            toastService.ShowError(
+                "La cantidad debe ser mayor que cero");
+            return;
+        }
+
+        var cantidadAgregada = venta.Detalles
+            .Where(d => d.ProductoId == item.producto.ProductoId)
+            .Sum(d => d.Cantidad);
+
+        if (cantidadAgregada + item.cantidad > item.producto.Stock)
+        {
+            toastService.ShowError(
+                "No hay suficiente stock disponible");
+            return;
+        }
+
         venta.Detalles.Add(new VentasDetalle
             {
                 ProductoId = item.producto.ProductoId,
@@ -71,6 +89,13 @@
 
     private async Task Guardar()
     {
+        if (!venta.Detalles.Any())
+        {
+            toastService.ShowError(
+                "Debe agregar al menos un producto");
+            return;
+        }
+
         var resultado = await ventasService.Guardar(venta);
         if (resultado.IsSuccess)
         {

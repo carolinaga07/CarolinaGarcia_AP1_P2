@@ -1,0 +1,96 @@
+﻿@page "/Ventas"
+@rendermode InteractiveServer
+@inject VentasService ventaService
+@inject ToastService toastService
+
+<PageTitle>Consulta de Ventas</PageTitle>
+
+<div class="container">
+    <div class="card shadow-lg">
+        <div class="card-header d-flex justify-content-between align-content-center mb-4">
+            <h5 class="card-title">Consulta de Ventas</h5>
+            <a href="/Ventas/Registro" class="btn btn-primary bi bi-plus-lg">Crear</a>
+        </div>
+
+        <div class="card-body">
+            <div class="row align-items-center">
+                <div class="col-2">
+                    <InputDate class="form-control" @bind-Value="Desde" />
+                </div>
+                <div class="col-2">
+                    <InputDate class="form-control" @bind-Value="Hasta" />
+                </div>
+                <div class="col-3">
+                    <InputSelect class="form-select" @bind-Value="Filtro">
+                        <option value="" selected disabled>Elija una opcion</option>
+                        <option value="filtro1">VentaId</option>
+                        <option value="filtro2">Concepto</option>
+                    </InputSelect>
+                </div>
+                <div class="col-4">
+                    <div class="input-group">
+                        <input class="form-control" @bind="ValorFiltro" placeholder="Buscar" />
+                        <button type="button" class="btn btn-outline-primary bi bi-search" @onclick="Buscar"></button>
+                    </div>
+                </div>
+
+                <QuickGrid Items="ListaVentas.AsQueryable()" Class="table table-hover">
+                    <PropertyColumn Property="v => v.VentaId" Title="VentaId" Sortable="true" />
+                    <PropertyColumn Property="v => v.Fecha" Title="Fecha" Format="dd/MM/yyyy" Sortable="true" />
+                    <PropertyColumn Property="v => v.Observacion" Title="Observación" Sortable="true" />
+                    <PropertyColumn Property="v => v.Total" Title="Total" Format="N2" Sortable="true" />
+
+                    <TemplateColumn Title="Opciones" Context="ventaItem">
+                        <a href="/Ventas/Editar/@ventaItem.VentaId" class="btn btn-outline-primary bi bi-pencil-square"></a>
+                    </TemplateColumn>
+                </QuickGrid>
+            </div>
+        </div>
+
+        <div class="card-footer d-flex justify-content-between">
+            <label>Cantidad: @ListaVentas.Count()</label>
+            <label>Total vendido: @ListaVentas.Sum(v => v.Total).ToString("N2")</label>
+        </div>
+    </div>
+</div>
+
+@code {
+    public List<Ventas> ListaVentas { get; set; } = new List<Ventas>();
+    public string Filtro { get; set; } = string.Empty;
+    public string ValorFiltro { get; set; } = string.Empty;
+    private DateTime? Desde;
+    private DateTime? Hasta;
+
+    protected override async Task OnInitializedAsync() => await Buscar();
+
+    private async Task Buscar()
+    {
+        var resultado = await ventaService.GetList(v => v.VentaId > 0);
+        var lista = resultado.ValueOrDefault ?? new();
+
+        if (!string.IsNullOrWhiteSpace(ValorFiltro))
+        {
+            switch (Filtro)
+            {
+                case "filtro1":
+                    lista = lista.Where(v => v.VentaId.ToString() == ValorFiltro.Trim()).ToList();
+                    break;
+
+                case "filtro2":
+                    lista = lista.Where(v =>
+                        v.Observacion != null &&
+                        v.Observacion.ToLower().Contains(
+                            ValorFiltro.ToLower())).ToList();
+                    break;
+            }
+        }
+
+        if (Desde.HasValue)
+            lista = lista.Where(v => v.Fecha.Date >= Desde.Value.Date).ToList();
+
+        if (Hasta.HasValue)
+            lista = lista.Where(v => v.Fecha.Date <= Hasta.Value.Date).ToList();
+
+        ListaVentas = lista;
+    }
+}

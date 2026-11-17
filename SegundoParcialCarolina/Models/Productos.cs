@@ -11,7 +11,10 @@ public class Productos
     [Required(ErrorMessage = "Este campo es requerido.")]
     public string Nombre { get; set; } = string.Empty;
 
+    [Range(0, double.MaxValue, ErrorMessage = "El precio no puede ser negativo.")]
     public double Precio { get; set; }
+
+    [Range(0, int.MaxValue, ErrorMessage = "El stock no puede ser negativo.")]
     public int Stock { get; set; }
 
     [InverseProperty("Producto")]

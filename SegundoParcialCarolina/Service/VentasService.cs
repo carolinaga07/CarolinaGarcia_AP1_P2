@@ -52,7 +52,7 @@ public class VentasService(IDbContextFactory<Contexto> contextFactory)
             return false;
         }
 
-        if(!await AfectarStock(contexto, venta.Detalles, 1))
+        if(!await AfectarStock(contexto, original.Detalles, 1))
         {
             return false;
         }
@@ -123,18 +123,27 @@ public class VentasService(IDbContextFactory<Contexto> contextFactory)
     {
         foreach (var detalle in detalles)
         {
-            var producto = await contexto.Productos.FindAsync(detalle.ProductoId);
-            if( producto == null)
+            if (detalle.Cantidad <= 0)
             {
                 return false;
             }
+
+            var producto = await contexto.Productos
+                .FindAsync(detalle.ProductoId);
+
+            if (producto == null)
+            {
+                return false;
+            }
+
             producto.Stock += detalle.Cantidad * signo;
 
-            if(producto.Stock < 0)
+            if (producto.Stock < 0)
             {
                 return false;
             }
         }
+
         return true;
     }
     

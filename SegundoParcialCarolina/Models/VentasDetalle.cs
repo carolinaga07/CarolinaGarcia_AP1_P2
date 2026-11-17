@@ -10,7 +10,10 @@ public class VentasDetalle
     public int VentaId { get; set; }
     public int ProductoId { get; set; }
 
+    [Range(1, int.MaxValue, ErrorMessage = "La cantidad debe ser mayor que cero.")]
     public int Cantidad { get; set; }
+
+    [Range(0, double.MaxValue, ErrorMessage = "El precio no puede ser negativo.")]
     public double Precio { get; set; }
 
     [ForeignKey("VentaId")]
